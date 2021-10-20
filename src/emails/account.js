@@ -19,7 +19,7 @@ const message = {
 //   .catch((error) => console.log("Error send => " + error.message));
 
 const sendEmailCancelation = (name, email) => {
-  console.log(name, email);
+  // console.log(name, email);
   sgMail.send({
     to: email,
     from: "hamzamorabit123@gmail.com",

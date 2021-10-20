@@ -1,27 +1,10 @@
 const app = require("./../src/app");
 const request = require("supertest");
 const User = require("../src/models/User");
-const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
+const { newUser, newUserId, setupDatabase ,
+} = require("./fixtures/db")
 
-const newUserId = new mongoose.Types.ObjectId();
-
-const newUser = {
-  email: "newUser@gmail.com",
-  password: "newUser)dfd",
-  name: "hamza",
-  _id: newUserId,
-  tokens: [
-    {
-      token: jwt.sign({ _id: newUserId.toString() }, process.env.JWT_SECRET),
-    },
-  ],
-};
-
-beforeEach(async () => {
-  await User.deleteMany();
-  await new User(newUser).save();
-});
+beforeEach(setupDatabase);
 
 test("Should singup a user", async () => {
   const response = await request(app)
@@ -81,4 +64,31 @@ test("Should delete account for user", async () => {
 
 test("Should get unexpected my profile", async () => {
   await request(app).delete("/users/me").send().expect(500); //401
+});
+
+/* test("Should upload avatar of user", async () => {
+  await request(app)
+    .get("/users/me/avatar")
+    .set("Authorization", `Bearer ${newUser.tokens[0].token}`)
+    .attach("avatar", "tests/fixtures/profile-pic.jpg")
+    .expect(200);
+});
+ */
+test("Should update an user", async () => {
+  await request(app)
+    .patch("/users/me")
+    .set("Authorization", `Bearer ${newUser.tokens[0].token}`)
+    .send({ age: 222, name: "updatename", email: "update@gmail.com" })
+    .expect(200);
+
+  const user = await User.findById(newUserId);
+  expect(user.name).toEqual("updatename");
+});
+
+test("Should not update invalide user field", async () => {
+  await request(app)
+    .patch("/users/me")
+    .set("Authorization", `Bearer ${newUser.tokens[0].token}`)
+    .send({ location: "Sale" })
+    .expect(400);
 });

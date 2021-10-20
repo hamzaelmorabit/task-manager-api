@@ -6,10 +6,6 @@ const jwt = require("jsonwebtoken");
 const Task = require("./models/Task");
 const User = require("./models/User");
 const app = express();
-
-const PORT = process.env.PORT || 3000;
-console.log(process.env.PORT);
-
 const multer = require("multer");
 
 const upload = multer({

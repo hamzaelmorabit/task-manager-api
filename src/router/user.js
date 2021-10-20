@@ -42,7 +42,7 @@ router.get("/users/:id", async (req, res) => {
 
 router.patch("/users/me", auth, async (req, res) => {
   const updates = Object.keys(req.body);
-  const fieldAllowed = ["name", "age", "password"];
+  const fieldAllowed = ["name", "age", "password", "email"];
   const isFieldAllowed = updates.every((update) =>
     fieldAllowed.includes(update)
   );
@@ -198,8 +198,9 @@ router.get(
   async (req, res) => {
     const user_ = await User.findById("616763ab47d3e1fbd6bb8c7b");
 
-    console.log(user_["avatar"].type, "kjsjfmqf");
-    fs.writeFileSync("./data.json", JSON.stringify(notes));
+    // console.log(user_["avatar"].type, "kjsjfmqf");
+    // fs.writeFileSync("./data.json", JSON.stringify(notes));
+    
     try {
       if (!user_.avatar) {
         throw new Error("No avatar Or user not found");
